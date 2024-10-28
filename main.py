@@ -59,14 +59,16 @@ async def generer_programme_alimentaire(donnees: FormData):
         f"Calories quotidiennes: {besoins_caloriques:.2f}."
     )
 
-    # Appel à l'API OpenAI
+    # Appel à l'API OpenAI en utilisant ChatCompletion
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt,
-            max_tokens=150
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Tu es un expert en nutrition."},
+                {"role": "user", "content": prompt}
+            ]
         )
-        programme_alimentaire = response.choices[0].text.strip()
+        programme_alimentaire = response['choices'][0]['message']['content'].strip()
     except Exception as e:
         return {"error": str(e)}
 
