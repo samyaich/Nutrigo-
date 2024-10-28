@@ -5,7 +5,6 @@ import os
 
 app = FastAPI()
 
-# Configuration de la clé API OpenAI
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class FormData(BaseModel):
@@ -22,22 +21,18 @@ async def root():
 
 @app.post("/genererProgramme")
 async def generer_programme_alimentaire(donnees: FormData):
-    # Exemple simplifié de calcul de BMR
     bmr = 88.362 + (13.397 * donnees.poids) + (4.799 * donnees.taille) - (5.677 * donnees.age)
     
-    # Préparer le prompt pour OpenAI
     prompt = f"Créer un programme alimentaire pour une personne de {donnees.age} ans."
 
-    # Appel correct à l'API OpenAI
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Tu es un expert en nutrition."},
-            {"role": "user", "content": prompt}
-        ]
-    )
+    response = openai.Completion.create(
+    model="text-davinci-003",
+    prompt=prompt,
+    max_tokens=300
+)
 
-    programme_alimentaire = response.choices[0].message['content']
+
+    programme_alimentaire = response.choices[0].text.strip()
     return {
         "calories_journalières": bmr,
         "programme_alimentaire": programme_alimentaire
