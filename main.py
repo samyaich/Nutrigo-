@@ -75,3 +75,5 @@ async def generer_programme_alimentaire(donnees: FormData):
         "calories_journalières": besoins_caloriques,
         "programme_alimentaire": programme_alimentaire
     }
+
+
